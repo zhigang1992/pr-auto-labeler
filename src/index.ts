@@ -1,12 +1,16 @@
 import { Application } from 'probot'
+// @ts-ignore
+import getConfig from 'probot-config'
 
 export = (app: Application) => {
-  // Your code here
-  app.log('Yay, the app was loaded!')
+  app.on(['pull_request.opened', 'pull_request.edited'], async (context) => {
+    const config = await getConfig(context, 'pr-title.yml');
+    if (config && typeof config.regex === 'string') {
+      app.log(config.regex)
+      app.log(context.payload.pull_request)
+    } else {
+      app.log('config file not found')
+    }
 
-  // For more information on building apps:
-  // https://probot.github.io/docs/
-
-  // To get your app running against GitHub, see:
-  // https://probot.github.io/docs/development/
+  });
 }
