@@ -1,35 +1,36 @@
-import { Application } from 'probot'
+import { Application } from "probot";
 // @ts-ignore
-import getConfig from 'probot-config'
+import getConfig from "probot-config";
+import { ChecksCreateParams } from "@octokit/rest";
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export = (app: Application) => {
-  app.log('App Loaded')
-  app.on(['pull_request.opened', 'pull_request.edited'], async (context) => {
-    const config = await getConfig(context, 'pr-title.yml');
-    if (config && typeof config.regex === 'string') {
+  app.log("App Loaded");
+  app.on(["pull_request.opened", "pull_request.edited"], async context => {
+    const config = await getConfig(context, "pr-title.yml");
+    if (config && typeof config.regex === "string") {
       const pullRequest = context.payload.pull_request;
       const title: string = pullRequest.title;
-      const checkOptions: any = {
+      const titlePassRegexTest = new RegExp(config.regex).test(title);
+      const checkOptions: Omit<ChecksCreateParams, 'owner' | 'repo'> = {
         name: "PR-Title",
-        head_branch: '',
         head_sha: pullRequest.head.sha,
-        status: 'in_progress',
+        conclusion: titlePassRegexTest ? "success" : "failure",
+        completed_at: (new Date()).toISOString(),
         output: {
-          title: config.message || 'PR-Title does not meet requirement',
-          summary: config.message || `The title "${pullRequest.title}" meet requirement.`,
-          text: ''
+          title: titlePassRegexTest
+            ? "Ready for review"
+            : config.message || "PR-Title does not meet requirement",
+          summary:
+            titlePassRegexTest
+            ? "PR title now meet requirement"
+            : config.message || `The title "${pullRequest.title}" meet requirement.`
         }
-      }
-      if ((new RegExp(config.regex)).test(title)) {
-        checkOptions.status = 'completed'
-        checkOptions.conclusion = 'success'
-        checkOptions.completed_at = new Date()
-        checkOptions.output.title = 'Ready for review'
-        checkOptions.output.summary = 'PR title now meet requirement'
-      }
-      await context.github.checks.create(context.repo(checkOptions))
+      };
+      await context.github.checks.create(context.repo(checkOptions));
     } else {
-      context.log('config file not found')
+      context.log("config file not found");
     }
   });
-}
+};
