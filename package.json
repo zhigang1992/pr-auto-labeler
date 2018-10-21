@@ -13,10 +13,9 @@
     "probot-app"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "postinstall": "tsc -p tsconfig.json",
+    "build": "./node_modules/.bin/tsc -p tsconfig.json",
     "dev": "nodemon --exec \"npm start\"",
-    "start": "probot run ./lib/index.js",
+    "start": "yarn build && probot run ./lib/index.js",
     "lint": "standard **/*.ts --fix",
     "test": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
