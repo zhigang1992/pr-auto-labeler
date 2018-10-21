@@ -10,14 +10,27 @@ export = (app: Application) => {
     if (config && typeof config.regex === 'string') {
       context.log(config.regex)
       const title: string = context.payload.pull_request.title;
+      const pullRequest = context.payload.pullRequest;
+      const checkOptions: any = {
+        name: "PR-Title",
+        head_branch: '',
+        head_sha: pullRequest.head.sha,
+        status: 'in_progress',
+        output: {
+          title: 'Work in progress',
+          summary: config.message || `The title "${pullRequest.title}" meet requirement.`,
+          text: ''
+        }
+      }
       if ((new RegExp(config.regex)).test(title)) {
-        context.log('No action needed')
+        checkOptions.status = 'completed'
+        checkOptions.conclusion = 'success'
+        checkOptions.completed_at = new Date()
+        checkOptions.output.title = 'Ready for review'
+        checkOptions.output.summary = 'PR title now meet requirement'
         return;
       }
-      const comment = context.issue({
-        body: config.message || "Please correct your PR title"
-      })
-      context.github.issues.createComment(comment)
+      await context.github.checks.create(context.repo(checkOptions))
     } else {
       context.log('config file not found')
     }
