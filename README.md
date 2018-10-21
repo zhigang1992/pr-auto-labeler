@@ -1,4 +1,4 @@
-# pr-title
+# PR-title
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that Check PR title format
 
