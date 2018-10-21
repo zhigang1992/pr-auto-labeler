@@ -1,1 +1,2 @@
 regex: ^PR-TITLE.*$
+message: Please correct your PR Title
