@@ -7,7 +7,7 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export = (app: Application) => {
   app.log("App Loaded");
-  app.on(["pull_request.opened", "pull_request.edited"], async context => {
+  app.on(["pull_request.opened", "pull_request.edited", "pull_request.synchronize"], async context => {
     const config = await getConfig(context, "pr-title.yml");
     if (config && typeof config.regex === "string") {
       const pullRequest = context.payload.pull_request;
