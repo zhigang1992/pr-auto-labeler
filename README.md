@@ -4,16 +4,17 @@
 
 ## Setup
 
-```sh
-# Install dependencies
-npm install
+https://github.com/apps/pr-title
 
-# Run typescript
-npm run build
+To configure add a `.github/pr-title.yml`
 
-# Run the bot
-npm start
+
+```pr-title.yml
+regex: ^PR-TITLE.*$%
+message: Custom message
+
 ```
+
 
 ## Contributing
 
