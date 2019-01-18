@@ -1,5 +1,5 @@
 {
-  "name": "pr-title",
+  "name": "pr-auto-labeler",
   "version": "1.0.0",
   "description": "Automatically Label PR",
   "author": "Kyle Fang <zhigang1992@gmail.com>",

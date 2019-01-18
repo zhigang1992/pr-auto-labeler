@@ -1,36 +1,35 @@
 import { Application } from "probot";
-// @ts-ignore
-import getConfig from "probot-config";
-import { ChecksCreateParams } from "@octokit/rest";
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+interface Label {
+  id: string;
+  name: string;
+}
 
 export = (app: Application) => {
   app.log("App Loaded");
-  app.on(["pull_request.opened", "pull_request.edited", "pull_request.synchronize"], async context => {
-    const config = await getConfig(context, "pr-title.yml");
-    if (config && typeof config.regex === "string") {
+  app.on(
+    ["pull_request.opened", "pull_request.edited", "pull_request.synchronize"],
+    async context => {
+      // @ts-ignore
+      const labels: Label[] = (await context.github.issues.getLabels(
+        context.issue({ per_page: 20 })
+      )).data;
+
       const pullRequest = context.payload.pull_request;
       const title: string = pullRequest.title;
-      const titlePassRegexTest = new RegExp(config.regex).test(title);
-      const checkOptions: Omit<ChecksCreateParams, 'owner' | 'repo'> = {
-        name: "PR-Title",
-        head_sha: pullRequest.head.sha,
-        conclusion: titlePassRegexTest ? "success" : "failure",
-        completed_at: (new Date()).toISOString(),
-        output: {
-          title: titlePassRegexTest
-            ? "Ready for review"
-            : config.message || "PR-Title does not meet requirement",
-          summary:
-            titlePassRegexTest
-            ? "PR title now meet requirement"
-            : config.message || `The title "${pullRequest.title}" meet requirement.`
-        }
-      };
-      await context.github.checks.create(context.repo(checkOptions));
-    } else {
-      context.log("config file not found");
+      const existingLabelIds = (pullRequest.labels as Label[]).map(l => l.id);
+
+      const labelToAdd = labels.filter((label: Label) => {
+        return (
+          !existingLabelIds.includes(label.id) && title.includes(label.name)
+        );
+      });
+
+      await context.github.issues.addLabels(
+        context.issue({
+          labels: labelToAdd.map(l => l.name)
+        })
+      );
     }
-  });
+  );
 };
