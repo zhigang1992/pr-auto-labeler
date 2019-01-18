@@ -1,12 +1,12 @@
 {
   "name": "pr-title",
   "version": "1.0.0",
-  "description": "Check PR title format",
+  "description": "Automatically Label PR",
   "author": "Kyle Fang <zhigang1992@gmail.com>",
   "license": "ISC",
-  "repository": "https://github.com/zhigang1992/pr-title.git",
-  "homepage": "https://github.com/zhigang1992/pr-title",
-  "bugs": "https://github.com/zhigang1992/pr-title/issues",
+  "repository": "https://github.com/zhigang1992/pr-labeler.git",
+  "homepage": "https://github.com/zhigang1992/pr-labeler",
+  "bugs": "https://github.com/zhigang1992/pr-labeler/issues",
   "keywords": [
     "probot",
     "github",
