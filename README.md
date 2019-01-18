@@ -1,19 +1,10 @@
-# PR-title
+# PR-Auto-Labeler
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that Check PR title format
+> A GitHub App built with [Probot](https://github.com/probot/probot) that Labels your PR automatically
 
 ## Setup
 
-https://github.com/apps/pr-title
-
-To configure add a `.github/pr-title.yml`
-
-
-```pr-title.yml
-regex: ^PR-TITLE.*$%
-message: Custom message
-
-```
+https://github.com/apps/pr-auto-labeler
 
 
 ## Contributing
