@@ -9,11 +9,8 @@ export = (app: Application) => {
         context.issue({ per_page: 20 })
       )).data;
 
-      const existingLabels = (await context.github.issues.listLabelsOnIssue(
-        context.issue()
-      )).data;
-
       const pullRequest = context.payload.pull_request;
+      const existingLabels: typeof labels = pullRequest.data.labels;
       const title: string = pullRequest.title;
       const existingLabelIds = existingLabels.map(l => l.id);
 
