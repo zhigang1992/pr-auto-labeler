@@ -10,7 +10,7 @@ export = (app: Application) => {
       )).data;
 
       const pullRequest = context.payload.pull_request;
-      const existingLabels: typeof labels = pullRequest.data.labels;
+      const existingLabels: typeof labels = pullRequest.labels;
       const title: string = pullRequest.title;
       const existingLabelIds = existingLabels.map(l => l.id);
 
